@@ -1,0 +1,125 @@
+============================================================
+TABLE
+	-removal
+		DROP TABLE table_name
+	-modification
+		ALTER TABLE table_name
+			INSERT INTO table_name VALUES(...)
+			DELETE FROM table_name WHERE
+			UPDATE table_name SET.. WHERE
+
+	{1} INSERT INTO table_name
+		[ ( column_name [, ...] ) ]
+		VALUES ( { expression | DEFAULT } [, ...] );
+
+
+	INSERT INTO Students(studentID) VALUES(23456);
+	INSERT INTO Students VALUES (34567, ‘Bob’, ‘Eng’)
+
+	ALTER TABLE Students ALTER COLUMN dept DROP DEFAULT;	
+	ALTER TABLE Students DROP COLUMN dept;
+	ALTER TABLE Students ADD COLUMN faculty varchar(2);
+
+	{2} DELETE FROM Students;
+			[ WHERE condition ];
+
+	    DELETE FROM Students 
+			WHERE dept= 'Eng';	
+
+
+	{3} UPDATE table_name
+		SET column_name = { expression | DEFAULT }
+		[ WHERE condition ];
+
+		UPDATE Students 
+			SET name='Bob' WHERE dept='CS';
+
+		UPDATE Students 
+			SET studentID= StudentID + 1;
+
+	Add/ remove constraints
+		
+============================================================
+
+
+
+
+============================================================
+Queries
+============================================================
+	3 parts of a query
+		SELECT col1,col2,col3
+		FROM   table1	
+		WHERE  (predicate1) AND (predicate2)
+		
+	- SELECT DISTINCT a,c FROM r
+
+	Transforming columns
+	- SELECT item, price*qty AS cost FROM Orders
+
+	- Renaming values
+		||variable || AS new_col_name		
+
+		◦ q: SELECT ‘Price of ’ || pizza || ‘ is ’ ||
+			round(price / 1.3) || ‘ USD’ AS menu
+		     FROM Sells WHERE rname = ‘Corleone Corner’;
+	
+	- SELECT *   -- all columns
+	-  
+	- 
+
+============================================================
+ Qn1(a).
+	[X] area from restaurants(rname = rname from sells(pizza not exist ( pizza from Likes( cname <> 'Homer ) )))
+		Select based on meeting all criteria 
+
+	SELECT DISTINCT R.area
+	FROM Restaurants R, Sells S, Likes L
+	WHERE R.rname = S.rname
+	  AND S.pizza = L.pizza
+	  AND L.cname = `Homer`;
+
+  1(b)
+	SELECT DISTINCT L.cname,D.cname
+	FROM DISLIKES D, LIKES L
+	WHERE L.PIZZA = D.PIZZA;
+	
+
+  1(c)
+ 	SELECT DISTINCT R.cname, R.rname
+	FROM Customers C, Restaurants R, Sells S, Likes L
+	WHERE S.pizza = L.pizza AND S.rname = S.rname
+	  AND C.cname = L.cname AND C.area = R.area
+
+	selecting multiple criteria tgr
+	by doing so , since each critera not independant ( conditional on prev predicate )
+	the dataset reduces each time
+	
+	
+qn2(a)
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+		
+	
+	
+	
+			
+		
+		
+		
+	
+	
+	
+		
+	
+	
+										

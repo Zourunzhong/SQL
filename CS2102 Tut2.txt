@@ -1,0 +1,169 @@
+========|
+QN 1:	|
+========|
+
+CREATE TABLE Offices(
+	officeID int,
+	building varchar(100),
+	level int,
+	roomNumber int,
+	area varchar(100),
+	PRIMARY KEY(OfficeID),
+	UNIQUE( building,level,roomNumber )
+);
+
+CREATE TABLE Employees(
+	empID int,
+	name NOT NULL,
+	officeID int NOT NULL,
+	managerID int,
+	PRIMARY KEY(empID),
+	FOREIGN KEY(officeID) REFERENCES Offices(OfficeID),
+	FOREIGN KEY(managerID) REFERENCES Employees(empID)
+	
+);
+
+========|
+QN 2:	|
+========|
+
+CREATE TABLE Students(
+	sid int,
+	mentee varchar(100),
+	grade varchar(2),
+	
+	PRIMARY KEY(sid),
+	FOREIGN KEY(mentee) REFERENCES Students(sid),
+	CHECK(mentee!=sid)
+	CHECK( grade>=4.0 if mentee IS NOT NULL )
+);
+
+
+CREATE TABLE Students(
+	sid integer,
+	mentee varchar(100),
+	grade numeric,
+	
+	PRIMARY KEY(sid),
+	FOREIGN KEY(mentee) REFERENCES Students(sid),
+	CHECK(mentee <> sid)
+	CHECK( grade>=4.0 OR mentee IS NULL )
+);
+
+    ( Specifying constraints )
+	◦ Unique constraints keyword: UNIQUE
+	◦ Check any two records 𝑥, 𝑦 ∈ table such that
+			𝑥.column <> 𝑦.column
+	◦ General constraints keyword: CHECK
+
+========|
+QN 3:	|
+========|
+
+(plateNum) primary key
+
+satisfy property of key in order to be candidate key
+	- cannot have null
+	- subset of all attributes must uniquely identify entry
+	- subset of entry cannot be a superkey(attribute uniquely identifying) 
+		- key critera
+	- if have candidate key, >=1 of the keys has to be unique
+		to uniquely identify rows
+			& satisfy other conditions above
+			- not null & cannot be subset of superkey
+
+===================
+Learnings
+===================
+
+--------------
+Definitions
+--------------
+multiple
+	superkeys
+	candidate keys - if multiple keys
+
+primary key
+	one selected as primary key
+
+keys (key is always subset of other super-keys)
+	- minimal subset of attributes that uniquely identifies
+	- not null & no proper subset ( strictly smaller set ) is superkey
+
+superkey 
+	- subset of attributes to uniquely identify its tuples ( trivial requirement )
+
+candidate keys
+	- relation can have multiple keys - keys that uniquely identify each record 
+	- one candidate key is selected as primary key
+
+Foreign key
+	- refers to primary key of a second relation
+		OR
+	- be null value
+
+
+--------------
+syntax
+--------------
+foreign key references tbl2 pkey after pkey set as primary key in tbl2 
+
+
+
+--------------------------
+Types of domains
+--------------------------
+integer
+varchar(len)
+numeric decimal
+float
+
+
+--------------------------
+Writing predicates
+
+//==//
+https://docs.actian.com/avalanche/index.html#page/SQLLanguage/Predicates_in_SQL.htm
+//==//
+--------------------------
+
+TYPES OF OPERATORS
+	any-or-all-operator (subquery)
+	=ANY	=ALL
+	<>ANY	<>ALL		!= or not equals to
+	<ANY	<ALL
+	<=ANY	<=ALL
+	>ANY	>ALL
+	>=ANY	>=ALL
+
+EXISTS
+[NOT] Exists (subquery)
+
+
+IS 
+is [NOT] INTEGER/NULL/DECIMAL/DECIMAL/FLOAT/UNKNOWN(null)/BOOLEAN/TRUE/FALSE
+
+BEGINNING
+CONTAINING
+ENDING
+pattern
+
+BETWEEN
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

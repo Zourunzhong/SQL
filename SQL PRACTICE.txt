@@ -1,0 +1,141 @@
+lecture
+
+=====================================================================================
+product
+=====================================================================================
+	
+WITH T1 AS (SELECT OrderID,MAX(QUANTITY) AS maxm
+	FROM OrderDetails
+	GROUP BY OrderID),
+	T2 AS (SELECT OrderID,MAX(QUANTITY) AS maxm
+	FROM OrderDetails
+	GROUP BY OrderID)
+
+
+SELECT T1.OrderID,T2.OrderID
+FROM T1,T2
+WHERE (T1.maxm>T2.maxm)
+
+SELECT M.name
+FROM (Manufacturers M INNER JOIN Products P on M.Code = P.Manufacturer ) AS Combi,
+	(SELECT AVG(PRICE),COUNT(PRICE),name FROM Combi GROUPBY name) AS Combi2
+WHERE ( Combi2.name = M.name ) AND 145 < (Combi2.price) AND (Combi2.count >= 2)
+
+
+
+=====================================================================================
+EMPLOYEE MANAGEMENT
+=====================================================================================
+SELECT Department, COUNT(name)
+FROM employees
+GROUP BY Department
+
+
+SELECT *
+FROM Departments D INNER JOIN Employees E ON D.Code = E.Department
+( is there repeated column [ department,code ] )
+
+
+SELECT combi.Name,combi.Lastname
+FROM (Departments D INNER JOIN Employees E ON D.Code = E.Department) AS combi
+WHERE combi.Budget>60000
+
+
+SELECT combi.Name,combi.Lastname
+FROM (Departments D INNER JOIN Employees E ON D.Code = E.Department) AS combi
+WHERE combi.Budget>(SELECT AVG(PRICE) FROM Departments)
+(not required to groupby as table is alr unique departments)
+
+
+ 
+SELECT Employee.Name, Employee.LastName
+FROM (Employees INNER JOIN Departments on Employees.Department = Departments.Code) 
+WHERE Departments.Budget = (SELECT Budget FROM Departments ORDER BY PRICE
+				 LIMIT1 OFFSET 1)
+( improved on prev )
+SELECT Name,LastName
+FROM Employees 
+WHERE Employees.Department = (SELECT code FROM Departments ORDER BY Budget ASC 
+				LIMIT1 OFFSET 1)
+=====================================================================================
+The warehouse
+=====================================================================================
+SELECT code
+FROM Warehouses 
+WHERE Capacity <
+   ( SELECT COUNT(*)
+     FROM Boxes
+     WHERE Warehouse = Warehouses.Code
+   );
+
+
+=====================================================================================
+Movie theatres
+=====================================================================================
+WITH freqy AS ( 
+	SELECT COUNT(*) as freq
+	FROM MovieTheaters
+	GROUP BY Code
+	);
+SELECT Name 
+FROM freqy
+WHERE freq=0
+
+( simpler query )
+SELECT Name 
+FROM MovieTheaters
+WHERE Movie IS NULL
+
+SELECT *
+FROM Movies INNER JOIN MovieTheaters ON Movies.Code = MovieTheaters.Code 
+WHERE MovieTheaters.Movie IS NOT NULL
+
+( simpler query )
+SELECT * FROM MovieTheaters LEFT JOIN Movies
+ON MovieTheaters.Movie = Movies.Code;
+( mistake as all entries from movie theaters required )
+
+
+
+
+=====================================================================================
+Pieces and providers
+=====================================================================================
+SELECT
+FROM
+WHERE
+
+
+
+=====================================================================================
+
+=====================================================================================
+
+SELECT
+FROM
+WHERE
+
+=====================================================================================
+
+=====================================================================================
+qn 1
+	SELECT rname,pizza,price
+	FROM Sells S1
+	WHERE price > ALL(SELECT price FROM S2 WHERE S2.rname)
+
+qn2
+	SELECT S1.rname, S2.rname
+	FROM Sells S1, Sells S2
+	WHERE (SELECT MAX(S1.price) FROM S1 GROUPBY rname)
+		>  (SELECT MAX(S2.price) FROM S2 GROUPBY rname) 
+
+qn3 
+	SELECT 
+	
+	
+	
+	
+	
+	
+		
+	

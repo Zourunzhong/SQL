@@ -1,0 +1,398 @@
+More conditions
+
+=====================================================================================
+Pattern Matching
+==========================
+	attr LIKE pattern
+		_ : match any single character
+		% : match sequence of 0 or more characters
+
+_____________________________________________________________________________________		
+	   EX 1: find all customer names ending with "e" that consists of 
+			at least 4 chars
+
+		WHERE cname LIKE '_ _ _ %e' ( 4 including e itself);
+
+	   EX 2: find all customer names starting with "M", end w/ "e"
+
+		WHERE cname LIKE 'M%e';		
+
+_____________________________________________________________________________________
+=====================================================================================
+Conditional expressions
+==========================
+	case analysis
+		CASE...END
+==================================
+		CASE [expression]
+			WHEN condition THEN result
+			[ WHEN ... ]
+			[ ELSE result ]
+		END
+
+	EX 1:
+		
+		SELECT name, CASE
+			WHEN marks>= 85 THEN 'A'
+			WHEN marks >= 75 THEN 'B'
+			WHEN marks >=65 THEN 'C'
+			ELSE 'D'
+		END AS grade			grade is the name of the 
+		FROM Scores;			resulting column
+
+=====================================================================================
+Conditional expressions
+==========================
+	null analysis
+		NULLIF , COALESCE
+===================================
+	
+	NULLIF( val1, val2)
+	return null
+		if val1 = val2
+		else val1
+
+      EX1:
+		SELECT name, CASE
+			WHEN (result= 'pass') OR (result = 'fail')
+			THEN result
+		END AS status			status is the name of the 
+		FROM Quizzes			resulting column
+		
+	OR
+		SELECT name , NULLIF(result,'absent') AS status
+		FROM Quizzes;
+
+	COALESCE ( third, second, first) AS result
+		Only prescence/ absence of null matters
+	
+		does order matter?
+		- coalesce returns first non-null value in argument
+		- null returned if all arguments null
+
+=====================================================================================
+Multi-relation queries
+=======================
+	• set operations
+	• cross-products
+	• join: inner join, left outer join, right outer join
+		full outer join, natural join		
+	
+	
+	Q1 & Q2 denote SQL queries
+		UNION:      𝑄1 ∪ 𝑄2		
+		INTERSECT:  𝑄1 ∩ 𝑄2 	
+		EXCEPT:     𝑄1 - 𝑄2
+			- eliminates duplicate records
+		
+		UNION ALL
+		INTERSECT ALL
+		EXCEPT ALL	
+			- preserves duplicate records
+		
+		
+		
+=====================================================================================				
+Renaming tables
+	- CUSTOMERS as C
+	- CUSTOMERS C			
+				
+=====================================================================================				
+JOIN
+
+	INNER JOIN : 	𝑅 ⋈𝑐 𝑆 ≡ 𝜎𝑐(𝑅×𝑆)			
+		 Filter on Cartesian product
+	
+		SELECT DISTINCT L1.cname, L2.cname
+		FROM LIKES L1 INNER JOIN Likes L2
+			ON ( L1.pizza = L2.pizza )
+			AND ( L1.cname < L2.cname )
+							
+			
+		
+	Dangling tuple : 
+			does not participate in join operation
+			- inner join ignores dangling tuple
+			- preserve dangling tuple, use OUTERJOINS
+		
+			left outerjoin
+				join left, null on right ( if not match)
+			
+			right outerjoin
+				
+
+			FULL OUTERJOIN
+				join left & right
+					left/right null entries for non-matches
+						correspondingly
+
+======================|
+    DEFINTIONS	      |
+======================|
+	attr(R)
+		list of attributes in schema of R
+	
+	null(R)		
+		n-component tuple of null values
+		n : arity of relation R			
+			
+				
+			
+	Left Outer Join
+		𝑅→𝑐 𝑆≡(𝑅⋈𝑐 𝑆)∪((𝑅⊳𝑐 𝑆)×{null(𝑆)})
+	
+	Full Outer Join
+		• 𝑅 ↔𝑐 𝑆≡(𝑅→𝑐 𝑆)∪(𝑅←𝑐 𝑆)
+
+		• 𝑅 ↔𝑐 𝑆 ≡ (𝑅 ⋈𝑐 𝑆)
+		      ∪ ((𝑅⊳𝑐 𝑆) × {null(𝑆)})
+		      ∪ ({null(𝑅)} × (𝑆 ⊳𝑐 𝑅))
+	
+	
+	JOIN
+		does not include null
+	LEFT JOIN 
+		include null entries
+	RIGHT JOIN
+		must be based on right column
+
+	FULL JOIN
+
+	NATURAL JOIN
+		𝑅⋈𝑆≡𝜋𝑙 (𝜎𝑐 (𝑅×𝑆))
+		
+		inner join such that 
+			all the common attributes (i.e., columns) are equal
+		And remove duplicated attributes (i.e., rows)
+	
+	
+	VIEWS	
+		
+		
+============================================================================================================
+QN1
+	SELECT rname,pizza,MAX(price)
+	FROM Sells
+	GROUPBY rname
+
+
+	SELECT rname,pizza,max 
+	FROM Sells S1
+	WHERE NOT EXISTS(
+
+		SELECT 1 FROM Sells S2
+		WHERE S2.pizza=S1.pizza AND S2.price<S1.price
+
+	);
+
+	
+	SELECT rname,pizza,price
+	FROM Sells S1
+	WHERE price>=ALL(
+		SELECT S2.price from Sells S2		
+		WHERE S2.pizza = S1.pizza
+	);
+
+
+QN2
+
+inefficient, repeat entries need to be removed with DISTINCT
+		
+	SELECT DISTINCT S1.rname,S2.rname
+	FROM Sells S1, Sells S2
+	WHERE EXISTS (
+		S1.rname<>S2.rname AND
+		MAX(S2.price) > MAX(S1.price)
+	);
+
+
+	SELECT R1.rname, R2.rname
+	FROM Restaurants R1, Restaurants R2
+	WHERE ( SELECT MAX(price) FROM Sells WHERE rname = R1.rname)
+	    > ( SELECT MAX(price) FROM Sells WHERE rname = R2.rname)
+		
+
+QN3
+	SELECT rname, AVG(price)
+	FROM Sells S1, Sells S2
+	WHERE ( S2.rname = rname AND AVG(S2.price)
+	
+	
+		
+	SELECT rname, AVG(price)
+	FROM Sells S
+	GROUPBY rname
+	WHERE AVG(price)>22
+
+	create a temp table that fulfils given criteria
+	WITH RestAvgPrice AS
+	( SELECT rname, AVG(price) AS Avgprice FROM Sells GROUPBY rname )
+	SELECT rname, Avgprice from RestAvgPrice WHERE Avgprice>22;
+	
+QN4
+	WITH RestSumPrice
+	AS ( SELECT rname, SUM(Price) as TPrice FROM sells GROUPBY rname)
+	
+	SELECT rname,Tprice FROM RestSumPrice WHERE Tprice> AVG(TPrice); 	
+	
+	
+
+	[Correction]
+	SELECT rname,Tprice FROM RestSumPrice WHERE Tprice> (SELECT AVG(TPrice) FROM RestSumPrice);
+
+QN5
+	w/ EXCEPT
+
+
+
+	w/o EXCEPT		
+		SELECT L1.cname, L2.cname
+		FROM Likes L1, Likes L2
+		WHERE ALL(L1.cname=)=(L1.pizza)
+	
+		
+		SELECT L1.cname, L2.cname
+		FROM Likes L1, Likes L2
+		WHERE ALL( SELECT L1.pizza FROM L1 WHERE (L1.cname = cname))
+			= ALL( SELECT L1.pizza FROM L1 WHERE (L2.cname = cname))
+
+	
+	
+QN6	
+	UPDATE Sell
+	SET price=price+1;		
+	WHERE (Restaurants.area='Central' AND Restaurants.rname = Sell.rname)	
+	
+
+	UPDATE Sell S
+	SET Price = CASE( SELECT area FROM Restaurants WHERE rname = s.rname)
+		WHEN area = 'Central', THEN price +3
+		WHEN area = 'East', THEN price +2
+		ELSE price +1
+	END;
+	
+	
+7(A)
+	each week, students can present at most 1 question
+	
+
+
+
+
+
+
+
+
+
+
+============================================================================================================	
+4. 
+	WITH totalprice
+	AS ( SELECT rname,SUM(price) as totalprice
+		FROM Sells 
+		GROUP BY rname 
+		)
+	SELECT rname,totalprice
+	FROM Sells
+	WHERE totalprice > ( SELECT AVG(price)
+				FROM Sells )
+
+5.
+	SELECT L1.cname, L2.cname		
+	FROM LIKES L1, LIKES L2
+	WHERE L1.pizza=L2.pizza 
+	AND	L1.cname < L2.cname
+	AND L1.pizza IS NOT NULL
+			
+6.		
+	
+	
+					
+	
+			
+============================================================================================================	
+		
+7.
+(a)
+	WITH Pfreq AS
+		(SELECT sid,COUNT(qnum) as freq
+		FROM Presenters
+		GROUP BY sid)
+	SELECT sid  
+	FROM Pfreq
+	ORDER BY freq DESC 
+	
+	[X]
+	SELECT sid  
+	FROM Presenters
+	ORDER BY COUNT DESC 	
+	( wrong as COUNT() will count the entire dataset , without grpby )
+
+	
+(b)	
+	plan:
+		extract pname1, pname2
+		where weeks are the same
+		groupby 
+	
+	
+	WITH Pfreq AS
+		(SELECT COUNT(*), P1.sid as PTR1, P2.sid AS PTR2
+		FROM Presenters P1, Presenters P2	
+		WHERE P1.week = P2.week AND P1.sid < P2.sid 
+		GROUP BY P1.sid, P2.sid)
+	SELECT PTR1, PTR2
+	FROM Pfreq 
+	WHERE freq>5
+
+(c)
+	select distinct sid, weeknum (tuple pair) as unique
+	cartesian pdt - gives co
+	sid, weeknum1,weeknum2, weeknum3 as alloutcomes
+		week2/week3 = (select weeknum from unique)
+	select from alloutcomes where weeknum1=weeknum2-1 and weeknum2=weeknum3-1
+
+	
+(d) 
+	obtain s1, lastweek - groupby,max
+	
+	with compiled_table AS
+	select s1,lastweek, qnum 
+	inner join on (sid AND week=lastweek), case when lastweek IS NULL then qnum=0,lastweek=0
+					      when lastweek IS NOT NULL then lastweek
+	SELECT sid1,sid2
+	FROM compiled_table1,(Select s1 AS s2, lastweek as lastweek2,qnum as qnum2 
+				FROM compiled_table2)
+	WHERE numq1<numq2
+	  OR (numq1 = numq2) AND (lastwk1 < lastwk2)
+	  OR (numq1 = numq2) and (lastwk1 = lastwk2) and (s1 < s2) 
+	
+(e)
+		
+	SELECT 
+	FROM Presenters
+	WHERE 
+	
+	
+	
+	
+	
+	
+
+		
+		
+		
+	
+		
+		
+	
+	
+			
+	
+		
+	
+	
+		
+	
+	
+		

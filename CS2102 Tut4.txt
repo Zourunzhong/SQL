@@ -1,0 +1,136 @@
+ERD
+    	ENTITY-RELATIONSHIP(ER) Diagrams
+	
+	Types of cardinality
+		1 - 1
+		1 - M
+		M - M	
+================================================================================================
+LECTURE NOTES
+================================================================================================
+CREATE TABLE Supplies(
+		sid char(10) REFERENCES Suppliers
+		pid char(10) REFERENCES Parts
+	       pjid char(10) REFERENCES Projects
+		price numeric
+		qty integer
+		PRIMARY KEY (sid,pid,sjid)
+	);
+
+
+================================================================================================
+1
+================================================================================================
+	CREATE TABLE Room (
+		floor integer,
+		number integer,
+		name varchar(20)
+		PRIMARY KEY (floor,name)
+	);
+	
+================================================================================================
+2
+================================================================================================
+
+
+================================================================================================
+3
+================================================================================================
+
+
+================================================================================================
+4
+================================================================================================
+
+
+================================================================================================
+5
+================================================================================================
+
+
+================================================================================================
+6
+================================================================================================
+8.
+(a)
+	SELECT pizza 
+	FROM Likes
+	WHERE cname='Alice' AND cname<>'bob'
+	
+	
+(b)	SELECT rname,pizza
+	FROM ( Customers LEFT JOIN Restaurants ON Customer.area = ..area ) LEFT JOIN
+	Sells ON Sells.rname
+	WHERE pizza IS NOT NULL
+
+
+(c) 	
+	SELECT rname,pizza
+	FROM ( Customers LEFT JOIN Restaurants ON Customer.area = ..area ) LEFT JOIN
+	Sells ON Sells.rname
+	
+(d)		
+	
+	
+================================================================================================	
+10
+================================================================================================	
+(a)	patients - pk :ssn	
+	doctors - pk :ssn
+	cpy - pk : name
+	drug - pk :trade_name, 1:1 with cpy, cascade on delete
+	pharmacy: pk : name, 1:m drugs
+	patient: 1:m doctor
+	doctors: 1:m patients
+	contract: pharmacy-cpy
+	
+	1) patient:doctor, total participation relation by doctor, >=1 patient	[X]
+		(corr)key and total participation btw patients and doctor	[✔]
+				patients => PrimaryPhysn(R/N)
+			"every patient has (1) primary physician"				
+	
+
+		(corr)total participation of doctors wrt PrimaryPhysician r/s 	[✔]
+				"(every) doctor is primary physician of >=1 patient"
+	
+
+	2) doctor prescribes drugs total participation >=1 drug			[X]
+
+	3) total participation and key => for pharmacy and pharmaceutical cpy	[✔]
+					exactly 1								
+	4) candidate keys of pharmacy not labelled: {address}, {phone number}	[✔]
+		(corr) each pharmacy sells more than one
+			"each pharmacy sells several drugs and has a price for each"
+
+	5) drug and cpy: weak entity set, no cpy-> no drug  			[✔]
+	
+
+(b)	
+	
+	
+(c) instead of modelling `price` as an attribute of `Sells`, 
+		model `price` as attribute of `Drugs` entity
+
+(d) `Prescribes` modelled as 4-ary R/n involving additional entity set `Visits`	
+	with PK `date`
+	- each visit unique, req separate entity to store all records ( separate table )
+
+(e) total participation in supervises R/n by Pharmacies, - by partial by supervisors
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
